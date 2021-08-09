@@ -25,7 +25,7 @@ class Bitly implements UrlShorteningService
             'long_url' => $url,
         ];
 
-        if (!empty($additionalParams['domain'])) {
+        if (! empty($additionalParams['domain'])) {
             $bitlinkRequestConfig['domain'] = $additionalParams['domain'];
         }
 

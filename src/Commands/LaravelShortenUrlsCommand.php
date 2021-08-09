@@ -16,7 +16,7 @@ class LaravelShortenUrlsCommand extends Command
     public function handle(): void
     {
         $service = app(UrlShorteningService::class);
-        if (!$service instanceof UrlShorteningService) {
+        if (! $service instanceof UrlShorteningService) {
             throw new BindingResolutionException('Cannot get Url Shortening Service from Container');
         }
 
@@ -25,13 +25,13 @@ class LaravelShortenUrlsCommand extends Command
         $this->getOutput()->table(
             [
                 'Long Url',
-                'Short Url'
+                'Short Url',
             ],
             [
                 [
                     $url,
-                    $service->shortenUrl($url)
-                ]
+                    $service->shortenUrl($url),
+                ],
             ]
         );
     }
