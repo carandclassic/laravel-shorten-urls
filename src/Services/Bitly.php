@@ -25,12 +25,20 @@ class Bitly implements UrlShorteningService
             'long_url' => $url,
         ];
 
-        if (! empty($additionalParams['domain'])) {
+        if (!empty($additionalParams['domain'])) {
             $bitlinkRequestConfig['domain'] = $additionalParams['domain'];
         }
 
         /** @var Result $response */
         $response = $this->bitlink->createBitlink($bitlinkRequestConfig);
+
+        if ($response->isClientError() && $response->getResponseCode() === 403) {
+            throw new ApiResponseFailure(
+                'Bitly Service rejected the request: Forbidden. Please check api key in config',
+                403
+            );
+        }
+
         if ($response->isError()) {
             throw new ApiResponseFailure(
                 'Bitly service had an Error'
