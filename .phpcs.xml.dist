@@ -81,5 +81,4 @@
             <property name="searchAnnotations" type="bool" value="true"/>
         </properties>
     </rule>
-    <rule ref="SlevomatCodingStandard.PHP"/>
 </ruleset>

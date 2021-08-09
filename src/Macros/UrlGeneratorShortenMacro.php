@@ -10,7 +10,6 @@ use Illuminate\Routing\UrlGenerator;
 
 /**
  * @mixin UrlGenerator
- *
  * @psalm-suppress UndefinedMethod
  * @psalm-suppress UndefinedThisPropertyFetch
  * @psalm-suppress UndefinedThisPropertyAssignment
@@ -23,7 +22,7 @@ class UrlGeneratorShortenMacro
 
         return app(UrlShorteningService::class)->shortenUrl(
             $this->current(),
-            $additionalParams
+            $additionalParams,
         );
     }
 }

@@ -10,29 +10,35 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 
 class LaravelShortenUrlsCommand extends Command
 {
-    public $signature = 'url:shorten {url : The URL to shorten}';
-    public $description = 'Shorten an URL using the registered service';
+    /** @var string $signature */
+    protected $signature = 'url:shorten {url : The URL to shorten}';
+
+    /** @var string $description */
+    protected $description = 'Shorten an URL using the registered service';
 
     public function handle(): void
     {
-        $service = app(UrlShorteningService::class);
+        $service = $this->getLaravel()->make(UrlShorteningService::class);
+
         if (!$service instanceof UrlShorteningService) {
-            throw new BindingResolutionException('Cannot get Url Shortening Service from Container');
+            throw new BindingResolutionException(
+                'Cannot get Url Shortening Service from Container'
+            );
         }
 
-        $url = (string)$this->argument('url');
+        $url = $this->input->getArgument('url');
 
         $this->getOutput()->table(
             [
                 'Long Url',
-                'Short Url'
+                'Short Url',
             ],
             [
                 [
                     $url,
-                    $service->shortenUrl($url)
-                ]
-            ]
+                    $service->shortenUrl($url),
+                ],
+            ],
         );
     }
 }

@@ -6,10 +6,8 @@ namespace CarAndClassic\LaravelShortenUrls\ServiceProviders;
 
 use CarAndClassic\LaravelShortenUrls\Commands\LaravelShortenUrlsCommand;
 use CarAndClassic\LaravelShortenUrls\Contracts\UrlShorteningService;
-use CarAndClassic\LaravelShortenUrls\Macros\UrlGeneratorShortenMacro;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class MainServiceProvider extends ServiceProvider
@@ -18,18 +16,18 @@ class MainServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             UrlShorteningService::class,
-            static function (Container $app) {
+            static function (Container $app): UrlShorteningService {
                 $provider = config('shorten-urls.provider');
-                $providerList = collect(config('shorten-urls.provider-list'))
+                $providerList = collect(\config('shorten-urls.provider-list'))
                     ->filter(
-                        static fn (array $thisProvider) => array_key_exists('service_class', $thisProvider)
+                        static fn(array $thisProvider): bool => array_key_exists('service_class', $thisProvider)
                             && class_exists($thisProvider['service_class'])
                     )
                     ->map(
-                        fn ($provider) => $provider['service_class']
+                        static fn(array $provider): string => $provider['service_class']
                     );
 
-                if (! $providerList->has($provider)) {
+                if (!$providerList->has($provider)) {
                     throw new BindingResolutionException(
                         'Cannot load API provider for shortening service: ' . $provider
                     );
@@ -56,7 +54,6 @@ class MainServiceProvider extends ServiceProvider
                 ]
             );
         }
-
 //        UrlGenerator::mixin(new UrlGeneratorShortenMacro());
     }
 }

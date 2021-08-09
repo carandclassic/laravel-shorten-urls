@@ -16,15 +16,13 @@ class BitlyApiProvider extends ServiceProvider implements DeferrableProvider
         $this->app->bind(ApiInterface::class, Api::class);
         $this->app->bind(
             Api::class,
-            function () {
+            static function (): Api {
                 $curlOptions = (array)config()->get('shorten-urls.provider-list.bitly.curl_options', []);
                 $bitlyApi = new Api(config('shorten-urls.provider-list.bitly.api_key'));
                 if (!empty($curlOptions)) {
                     $bitlyApi->setCurlCallback(
-                    /**
-                     * @param resource $ch
-                     */
-                        static function ($ch) use ($curlOptions) {
+                    /** @param resource $ch */
+                        static function ($ch) use ($curlOptions): void {
                             foreach ($curlOptions as $curlOption => $optionValue) {
                                 curl_setopt($ch, $curlOption, $optionValue);
                             }
