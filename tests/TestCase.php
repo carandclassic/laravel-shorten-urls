@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace CarAndClassic\LaravelShortenUrls\Tests;
 
-use CarAndClassic\LaravelShortenUrls\LaravelShortenUrlsServiceProvider;
 use CarAndClassic\LaravelShortenUrls\ServiceProviders\MainServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;

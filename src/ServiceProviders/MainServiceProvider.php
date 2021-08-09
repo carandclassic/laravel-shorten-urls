@@ -22,14 +22,14 @@ class MainServiceProvider extends ServiceProvider
                 $provider = config('shorten-urls.provider');
                 $providerList = collect(config('shorten-urls.provider-list'))
                     ->filter(
-                        static fn(array $thisProvider) => array_key_exists('service_class', $thisProvider)
+                        static fn (array $thisProvider) => array_key_exists('service_class', $thisProvider)
                             && class_exists($thisProvider['service_class'])
                     )
                     ->map(
-                        fn($provider) => $provider['service_class']
+                        fn ($provider) => $provider['service_class']
                     );
 
-                if (!$providerList->has($provider)) {
+                if (! $providerList->has($provider)) {
                     throw new BindingResolutionException(
                         'Cannot load API provider for shortening service: ' . $provider
                     );
@@ -39,7 +39,6 @@ class MainServiceProvider extends ServiceProvider
             }
         );
     }
-
 
     public function boot(): void
     {
