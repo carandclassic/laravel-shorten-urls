@@ -58,6 +58,6 @@ class MainServiceProvider extends ServiceProvider
             );
         }
 
-        UrlGenerator::mixin(new UrlGeneratorShortenMacro());
+//        UrlGenerator::mixin(new UrlGeneratorShortenMacro());
     }
 }

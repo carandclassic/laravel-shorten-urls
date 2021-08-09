@@ -48,7 +48,6 @@
             "providers": [
                 "CarAndClassic\\LaravelShortenUrls\\ServiceProviders\\MainServiceProvider",
                 "CarAndClassic\\LaravelShortenUrls\\ServiceProviders\\BitlyApiProvider"
-
             ]
         }
     },
