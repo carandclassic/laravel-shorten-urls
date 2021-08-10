@@ -6,8 +6,10 @@ namespace CarAndClassic\LaravelShortenUrls\ServiceProviders;
 
 use CarAndClassic\LaravelShortenUrls\Commands\LaravelShortenUrlsCommand;
 use CarAndClassic\LaravelShortenUrls\Contracts\UrlShorteningService;
+use CarAndClassic\LaravelShortenUrls\Macros\UrlGeneratorShortenMacro;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class MainServiceProvider extends ServiceProvider
@@ -54,6 +56,6 @@ class MainServiceProvider extends ServiceProvider
                 ]
             );
         }
-//        UrlGenerator::mixin(new UrlGeneratorShortenMacro());
+        UrlGenerator::mixin(new UrlGeneratorShortenMacro());
     }
 }

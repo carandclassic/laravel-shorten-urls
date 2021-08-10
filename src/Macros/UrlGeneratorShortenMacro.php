@@ -6,6 +6,7 @@ namespace CarAndClassic\LaravelShortenUrls\Macros;
 
 use CarAndClassic\LaravelShortenUrls\Contracts\UrlShorteningService;
 use CarAndClassic\LaravelShortenUrls\Values\ShortLink;
+use Closure;
 use Illuminate\Routing\UrlGenerator;
 
 /**
@@ -16,11 +17,12 @@ use Illuminate\Routing\UrlGenerator;
  */
 class UrlGeneratorShortenMacro
 {
-    public function shorten(array $additionalParams = []): ?ShortLink
+    public function shorten(): Closure
     {
-        /** @var UrlGenerator $this */
+        return fn(array $additionalParams = []): ?ShortLink =>
+            /** @var UrlGenerator $this */
 
-        return app(UrlShorteningService::class)->shortenUrl(
+        app(UrlShorteningService::class)->shortenUrl(
             $this->current(),
             $additionalParams,
         );
