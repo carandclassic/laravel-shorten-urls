@@ -16,7 +16,7 @@ class LaravelShortenUrlsCommand extends Command
     /** @var string $description */
     protected $description = 'Shorten an URL using the registered service';
 
-    public function handle(): void
+    public function handle(): int
     {
         $service = $this->getLaravel()->make(UrlShorteningService::class);
 
@@ -40,5 +40,7 @@ class LaravelShortenUrlsCommand extends Command
                 ],
             ],
         );
+
+        return self::SUCCESS;
     }
 }
