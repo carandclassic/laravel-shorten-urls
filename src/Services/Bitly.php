@@ -39,11 +39,20 @@ class Bitly implements UrlShorteningService
             );
         }
 
+        if (!$response->isOK()) {
+            throw new ApiResponseFailure(
+                'Bitly service responded in error'
+                . $response->getReasonPhrase()
+                . var_export($response->getResponseArray(), true),
+                $response->getResponseCode()
+            );
+        }
+
         if ($response->isError()) {
             throw new ApiResponseFailure(
                 'Bitly service had an Error'
                 . $response->getReasonPhrase()
-                . var_export($response->getResponseArray(), true),
+                . var_export($response->getResponseObject()->errors, true),
                 $response->getResponseCode()
             );
         }
