@@ -27,14 +27,23 @@ class Shortio implements UrlShorteningService
             throw new ApiConfigurationError('Short.io Configuration Error: Missing Domain');
         }
 
-//        try {
-        $settings = array_merge(
-            $additionalParams,
-            [
-                'originalURL' => $url,
-                'domain' => $domain
-            ]
-        );
+        try {
+            $settings = json_encode(
+                array_merge(
+                    $additionalParams,
+                    [
+                        'originalURL' => $url,
+                        'domain' => $domain
+                    ]
+                ),
+                JSON_THROW_ON_ERROR
+            );
+        } catch (\JsonException $e) {
+            throw new ApiConfigurationError(
+                'Short.io Configuration Error - could not configure settings ' . $e->getMessage()
+            );
+        }
+
 
         $client = new Client();
         try {
@@ -48,19 +57,42 @@ class Shortio implements UrlShorteningService
                         'Authorization' => $apiKey,
                         'Content-Type' => 'application/json',
                     ],
-
+                    'http_errors' => false,
                 ]
             );
         } catch (GuzzleException $e) {
+            throw new ApiResponseFailure('Short.io error', $e->getCode(), $e);
         }
 
-        if ($response->getStatusCode() !== 200) {
-            throw new ApiResponseFailure(
-                'Short.io Response error:' . $response->getBody()->getContents(),
-                $response->getStatusCode()
-            );
+        $json = json_decode($response->getBody()->getContents(), true);
+        switch ($response->getStatusCode()) {
+            case 200:
+                return ShortLink::create($json['shortURL']);
+                break;
+            case 400:
+                throw new ApiResponseFailure(
+                    'Short.io Response error: ' . $json['error'] ?? ' Unknown Error',
+                    $response->getStatusCode()
+                );
+                break;
+            case 401:
+                throw new ApiResponseFailure(
+                    'Short.io Response error: API Key is invalid or not authorised',
+                    $response->getStatusCode()
+                );
+                break;
+            case 404:
+                throw new ApiResponseFailure(
+                    'Short.io Response error: Domain passed not found',
+                    $response->getStatusCode()
+                );
+                break;
+            default:
+                throw new ApiResponseFailure(
+                    'Short.io Response error: ' . $response->getStatusCode() . ' - ' . $response->getBody(
+                    )->getContents(),
+                    $response->getStatusCode()
+                );
         }
-
-        return ShortLink::create('https://www.google.com');
     }
 }
