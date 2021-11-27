@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use CarAndClassic\LaravelShortenUrls\Services\Bitly;
+use CarAndClassic\LaravelShortenUrls\Services\Shortio;
 
 return [
 
@@ -24,6 +25,13 @@ return [
              */
             'curl_options' => [
             ],
-        ]
+        ],
+        'shortio' => [
+            'service_class' => Shortio::class,
+
+            'api_key' => env('SHORTIO_API_KEY', ''),
+
+            'domain' => env('SHORTIO_API_DOMAIN', ''),
+        ],
     ]
 ];
