@@ -45,10 +45,8 @@ class Shortio implements UrlShorteningService
         }
 
 
-        $client = new Client();
         try {
-            $response = $client->request(
-                'POST',
+            $response = (new Client())->post(
                 'https://api.short.io/links',
                 [
                     'body' => $settings,
@@ -61,36 +59,45 @@ class Shortio implements UrlShorteningService
                 ]
             );
         } catch (GuzzleException $e) {
-            throw new ApiResponseFailure('Short.io error', $e->getCode(), $e);
+            throw new ApiResponseFailure(
+                'Short.io error - unexpected error in request ' . $e->getMessage(),
+                (int)$e->getCode(),
+                $e
+            );
         }
 
-        $json = json_decode($response->getBody()->getContents(), true);
+        try {
+            $json = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new ApiResponseFailure(
+                'Short.io error - cannot parse response' . $response->getBody()->getContents()
+            );
+        }
+
         switch ($response->getStatusCode()) {
             case 200:
                 return ShortLink::create($json['shortURL']);
-                break;
             case 400:
                 throw new ApiResponseFailure(
-                    'Short.io Response error: ' . $json['error'] ?? ' Unknown Error',
+                    'Short.io Response error: ' . ($json['error'] ?? ' Unknown Error'),
                     $response->getStatusCode()
                 );
-                break;
             case 401:
                 throw new ApiResponseFailure(
                     'Short.io Response error: API Key is invalid or not authorised',
                     $response->getStatusCode()
                 );
-                break;
             case 404:
                 throw new ApiResponseFailure(
                     'Short.io Response error: Domain passed not found',
                     $response->getStatusCode()
                 );
-                break;
             default:
                 throw new ApiResponseFailure(
-                    'Short.io Response error: ' . $response->getStatusCode() . ' - ' . $response->getBody(
-                    )->getContents(),
+                    'Short.io Response error: '
+                    . $response->getStatusCode()
+                    . ' - '
+                    . $response->getBody()->getContents(),
                     $response->getStatusCode()
                 );
         }
