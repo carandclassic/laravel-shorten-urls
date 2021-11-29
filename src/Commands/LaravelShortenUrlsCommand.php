@@ -14,7 +14,7 @@ class LaravelShortenUrlsCommand extends Command
     protected $signature = 'url:shorten {url : The URL to shorten}';
 
     /** @var string $description */
-    protected $description = 'Shorten an URL using the registered service';
+    protected $description = 'Shorten a URL using the registered service';
 
     public function handle(): int
     {
