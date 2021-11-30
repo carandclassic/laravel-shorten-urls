@@ -59,4 +59,17 @@ class Bitly implements UrlShorteningService
 
         return ShortLink::create($response->getResponseObject()->link);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function verifyConfig()
+    {
+        $apiKey = config('shorten-urls.provider-list.bitly.api_key');
+        if (empty($apiKey)) {
+            return ['api_key' => 'Bitly Api Key is missing or empty'];
+        }
+
+        return true;
+    }
 }

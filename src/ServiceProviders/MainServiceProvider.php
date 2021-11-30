@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CarAndClassic\LaravelShortenUrls\ServiceProviders;
 
 use CarAndClassic\LaravelShortenUrls\Commands\LaravelShortenUrlsCommand;
+use CarAndClassic\LaravelShortenUrls\Commands\LaravelShortenUrlsVerifyConfigCommand;
 use CarAndClassic\LaravelShortenUrls\Contracts\UrlShorteningService;
 use CarAndClassic\LaravelShortenUrls\Macros\UrlGeneratorShortenMacro;
 use Illuminate\Container\Container;
@@ -53,6 +54,7 @@ class MainServiceProvider extends ServiceProvider
             $this->commands(
                 [
                     LaravelShortenUrlsCommand::class,
+                    LaravelShortenUrlsVerifyConfigCommand::class,
                 ]
             );
         }

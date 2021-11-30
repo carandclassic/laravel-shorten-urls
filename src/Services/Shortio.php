@@ -102,4 +102,24 @@ class Shortio implements UrlShorteningService
                 );
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function verifyConfig()
+    {
+        $domain = (string)config('shorten-urls.provider-list.shortio.domain');
+        $apiKey = (string)config('shorten-urls.provider-list.shortio.api_key');
+        $errors = [];
+
+        if (empty($apiKey)) {
+            $errors['api_key'] = 'Short.io Configuration Error: Missing Api Key';
+        }
+
+        if (empty($domain)) {
+            $errors['domain'] = 'Short.io Configuration Error: Missing Domain';
+        }
+
+        return $errors ?: true;
+    }
 }
