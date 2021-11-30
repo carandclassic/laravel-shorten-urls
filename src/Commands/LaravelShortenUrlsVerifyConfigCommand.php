@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CarAndClassic\LaravelShortenUrls\Commands;
 
 use CarAndClassic\LaravelShortenUrls\Contracts\UrlShorteningService;
-use CarAndClassic\LaravelShortenUrls\Services\Bitly;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Str;
