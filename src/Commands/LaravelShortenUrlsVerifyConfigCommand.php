@@ -20,6 +20,9 @@ class LaravelShortenUrlsVerifyConfigCommand extends Command
 
     public function handle(): int
     {
+        $this->line('Laravel Shorten Urls - Verify Configuration');
+        $this->newLine();
+
         if (!config()->has('shorten-urls')) {
             $this->error('Shorten Urls configuration is missing or not compiled');
             return self::FAILURE;
@@ -41,6 +44,7 @@ class LaravelShortenUrlsVerifyConfigCommand extends Command
             || empty($providerList)
         ) {
             $this->error('Shorten Urls configuration provider configuration list is missing or empty');
+            $this->newLine();
             return self::FAILURE;
         }
 
@@ -51,6 +55,7 @@ class LaravelShortenUrlsVerifyConfigCommand extends Command
 
         if (!array_key_exists($providerName, $providerList)) {
             $this->error('Shorten Urls configuration is missing configuration for ' . $providerName);
+            $this->newLine();
             return self::FAILURE;
         }
 
@@ -58,18 +63,25 @@ class LaravelShortenUrlsVerifyConfigCommand extends Command
         $serviceClass = $providerConfig['service_class']
             ?: ('CarAndClassic\\LaravelShortenUrls\\Services\\' . Str::studly($providerName));
 
-        $service = $this->getLaravel()->make($serviceClass);
+        try {
+            $service = $this->getLaravel()->make($serviceClass);
+        } catch (BindingResolutionException $e) {
+        }
 
         if (!$service instanceof UrlShorteningService) {
             $this->error(
                 'Shorten Urls configuration Service Class for ' . $providerName . ' cannot be created from Container'
             );
+            $this->newLine();
             return self::FAILURE;
         }
 
         $result = $service->verifyConfig();
         if ($result === true) {
-            $this->info('Shorten Urls configuration for ' . $providerName . ' passed verification needed to create basic short urls');
+            $this->info(
+                'Shorten Urls configuration for ' . $providerName . ' passed verification needed to create basic short urls'
+            );
+            $this->newLine();
             return self::SUCCESS;
         }
 
